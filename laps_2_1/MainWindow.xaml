@@ -1,0 +1,210 @@
+﻿<Window x:Class="laps_2_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:laps21="clr-namespace:laps_2_1"
+        Title="Cats Shelter" Height="350" Width="900" Name="This" DataContext="{Binding ElementName=This, Path=ViewModel}" SizeToContent="Height">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionary.xaml"/>
+                <ResourceDictionary>
+                    <Style TargetType="Border" x:Key="Bar">
+                        <Setter Property="CornerRadius" Value="10"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="BorderBrush" Value="RosyBrown"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border>
+        <StackPanel>
+
+
+            <!-- cats  -->
+            <Border Style="{StaticResource Bar}">
+                <ListBox ItemsSource="{Binding Cats}" BorderThickness="0" AlternationCount="2" Name="CatsListBox" SelectedItem="{Binding SelectedCat, Mode=TwoWay}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style  TargetType="{x:Type ListBoxItem}">
+                            <Style.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                    <Setter Property="Background" Value="LightCoral"></Setter>
+                                </Trigger>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="LightSkyBlue"></Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <!--cat-->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="1" Orientation="Vertical">
+                                    <Image Height="90" Width="130">
+                                        <Image.Source>
+                                            <Binding Path="Type">
+                                                <Binding.Converter>
+                                                    <laps21:CatImgResourceConverter>
+                                                        <laps21:CatImgResourceConverter.Cat1>
+                                                            <StaticResource ResourceKey="Cat1"/>
+                                                        </laps21:CatImgResourceConverter.Cat1>
+                                                        <laps21:CatImgResourceConverter.Cat2>
+                                                            <StaticResource ResourceKey="Cat2"/>
+                                                        </laps21:CatImgResourceConverter.Cat2>
+                                                    </laps21:CatImgResourceConverter>
+                                                </Binding.Converter>
+                                            </Binding>
+                                        </Image.Source>
+                                    </Image>
+                                    <Grid Margin="5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" />
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Age" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AgeString}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Health" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <ProgressBar Grid.Row="2" Grid.Column="1" Value="30" Minimum="0" Maximum="100" Margin="5 2"/>
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Fear" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <ProgressBar Grid.Row="3" Grid.Column="1" Value="70" Minimum="0" Maximum="100" Margin="5 2"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!--right bar-->
+                                <Grid Grid.Column="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <ItemsControl ItemsSource="{Binding AffectingDogs}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <!--dog-->
+                                                <StackPanel>
+                                                    <Image/>
+                                                    <ProgressBar/>
+                                                </StackPanel>
+                                                <!--dog end-->
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Image Grid.Row="1" Source="{StaticResource Shield}"
+                                           Visibility="{Binding UnderShiled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                           />
+                                </Grid>
+
+                            </Grid>
+                            <!--cat end-->
+
+
+
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+            <!--cats end -->
+
+            <!--selected cat actions-->
+            <Border>
+                <Border.Style>
+                    <Style BasedOn="{StaticResource Bar}" TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedCatShop.IsCatSelected}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+
+                <StackPanel Orientation="Horizontal" Grid.IsSharedSizeScope="True">
+
+                    <ItemsControl ItemsSource="{Binding SelectedCatShop.ItemsForBuying}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- cat shop item-->
+                                <Grid Margin="5 0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition SharedSizeGroup="A"/>
+                                        <RowDefinition SharedSizeGroup="B"/>
+                                        <RowDefinition SharedSizeGroup="C"/>
+                                        <RowDefinition SharedSizeGroup="D"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
+                                    <Image Grid.Row="1" Height="50">
+                                        <Image.Source>
+                                            <Binding>
+                                                <Binding.Converter>
+                                                    <laps21:CatShopItemConverterImage>
+                                                        <laps21:CatShopItemConverterImage.Clew>
+                                                            <StaticResource ResourceKey="Clew"/>
+                                                        </laps21:CatShopItemConverterImage.Clew>
+                                                        <laps21:CatShopItemConverterImage.Shield>
+                                                            <StaticResource ResourceKey="Shield"/>
+                                                        </laps21:CatShopItemConverterImage.Shield>
+                                                    </laps21:CatShopItemConverterImage>
+                                                </Binding.Converter>
+                                            </Binding>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label Grid.Row="2" ContentStringFormat="{}Cost {0}" Content="{Binding Cost}"/>
+                                    <Button Grid.Row="3" Content="Buy" HorizontalAlignment="Center" Padding="7 0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Grid Margin="7 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition SharedSizeGroup="A"/>
+                            <RowDefinition SharedSizeGroup="B"/>
+                            <RowDefinition SharedSizeGroup="C"/>
+                            <RowDefinition SharedSizeGroup="D"/>
+                        </Grid.RowDefinitions>
+                        <Image  Grid.Row="1"  Source="{StaticResource Money}" Height="50"/>
+                        <Button Grid.Row="3" Content="Sell cat"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+
+
+        </StackPanel>
+        <!--<Image Source="{StaticResource Cat1}">
+            <Image.RenderTransform>
+                <ScaleTransform ScaleX="0.5"/>
+            </Image.RenderTransform>
+        </Image>-->
+    </Border>
+</Window>
